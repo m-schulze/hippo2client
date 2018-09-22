@@ -35,7 +35,7 @@ class Agent(object):
     HTTP_POST = "POST"
 
     # URL path
-    URL_API_OBJECTS = "api/v1/object"
+    URL_API_OBJECTS = "api/v1/entity"
 
     def __init__(self, url=None, timeout=REQUEST_TIMEOUT):
         self.timeout = timeout
@@ -46,7 +46,7 @@ class Agent(object):
         self.url = url
 
     def add(self, entity):
-        self.entities.append(entities)
+        self.entities.append(entity)
 
     def _check_pre_sync(self):
         if not self.url:
@@ -59,8 +59,9 @@ class Agent(object):
                                    }
         seperator = "/"
         if self.url.endswith("/"): seperator = ""
-        full_url = "{}{}{}".format(self.url, seperator, "api/v1/object")
+        full_url = "{}{}{}".format(self.url, seperator, Agent.URL_API_OBJECTS)
         data = str.encode(data)
+        print(full_url)
         req = urllib_request.Request(full_url, data, self.user_agent_headers)
         try:
             urllib_request.urlopen(req, timeout=self.timeout)
@@ -91,11 +92,12 @@ class Agent(object):
     # just an alias for sync
     upload = sync
 
+
 class MajorEntity(object):
 
-    def __self__(self, id_, name='', submitter=None, lifetime=None):
-        self.url = url
-        self.entities = list()
+    def __init__(self, id_, name='', submitter=None, lifetime=None):
+        self.id = id_
+        self.entries = list()
         self.name = name
         self.submitter = submitter if submitter else getpass.getuser()
         self.lifetime_group = lifetime if lifetime else 'standard'
@@ -104,7 +106,7 @@ class MajorEntity(object):
         d = dict()
         d['name'] = name
         d['content'] = content
-        self.entities.append(d)
+        self.entries.append(d)
 
     def encode(self):
         o = dict()
@@ -114,10 +116,10 @@ class MajorEntity(object):
         # meta can be overwritten (but this is logged)
         o['meta'] = dict()
         o['meta']['lifetime-group'] = self.lifetime_group
-        o['majors'] = self.entities
-
+        o['majors'] = self.entries
         return json.dumps(o, sort_keys=True, separators=(',', ': '))
 
 if __name__ == "__main__":
+    c = MajorEntity('ddd')
     sys.stderr.write("Python client library to interact with HippoD\n")
     sys.stderr.write("Please import this file and use provided function\n")

@@ -12,5 +12,3 @@
 .eggs
 
 hippodclient.egg-info
-
-hippiagent/tests/__init__.py
