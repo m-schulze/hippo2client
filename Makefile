@@ -14,5 +14,11 @@ test3:
 
 test: test2 test3
 
+setup:
+	python3 setup.py sdist
+
 upload:
-	python setup.py sdist upload -r pypi
+	python3 setup.py sdist upload -r pypi
+
+bootstrap:
+	python3 -m pip install --user --upgrade setuptools wheel twine

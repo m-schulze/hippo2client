@@ -21,8 +21,12 @@ class TestHippiAgent(TestCase):
         hippiagent.Agent(url=URL, timeout=TIMEOUT)
 
     def test_major_hello_world(self):
-        e = hippiagent.MajorEntity('v1.2.3-23-g82f7a727')
-        e.add_markdown('0001.md', '# title')
+        e = hippiagent.MajorEntity('v2.0.0-real-good')
+        e.add_markdown('0001.md', '# Real Good Example')
+
+        path_to_image = os.path.join(os.path.dirname(os.path.abspath(__file__)), "graph.png")
+        e.add_file("graph.png", path_to_image)
+        e.add_markdown('0002.md', '![graph](graph.png)')
 
         a = hippiagent.Agent(url=URL, timeout=TIMEOUT)
         a.add(e)

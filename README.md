@@ -3,7 +3,7 @@
 Simple install this module via pip (pip for Python 2 is also supported)
 
 ```
-pip3 install hippodclient
+pip3 install hippiagent
 ```
 
 And simple upload test with the following lines:
