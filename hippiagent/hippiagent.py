@@ -27,6 +27,22 @@ class ConfigurationException(Exception): pass
 class InternalException(Exception): pass
 class TransformException(Exception): pass
 
+def create_file_entry(file_name, mime_type=None):
+        """ Create file entry for object-item data or achievement. """
+        # Check first if the file is available
+        if not os.path.isfile(file_name):
+            emsg = "File '{}' is not available".format(file_name)
+            raise ArgumentException(emsg)
+
+        if not mime_type:
+            mime_type, _ = mimetypes.guess_type(file_name)
+            if mime_type is None:
+                mime_type = TestMimeTypes.guess_type(file_name)
+
+        with open(file_name, "rb") as f:
+            file_content = base64.b64encode(f.read())
+
+        return file_content.decode(), mime_type
 
 class Agent(object):
 
@@ -106,6 +122,16 @@ class MajorEntity(object):
         d = dict()
         d['name'] = name
         d['content'] = content
+        d['mime-type'] = 'text/markdown'
+        self.entries.append(d)
+
+    def add_file(self, name, path):
+        d = dict()
+        file_content, mime_type = create_file_entry(path)
+        d['name'] = name
+        d['content'] = file_content
+        d['mime-type'] = mime_type
+        d['base64-encoded'] = "true"
         self.entries.append(d)
 
     def encode(self):
