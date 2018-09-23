@@ -118,19 +118,21 @@ class MajorEntity(object):
         self.submitter = submitter if submitter else getpass.getuser()
         self.lifetime_group = lifetime if lifetime else 'standard'
 
-    def add_markdown(self, name, content):
+    def add_markdown(self, name, content, detent=False):
         d = dict()
         d['name'] = name
+        if detent == True:
+            content = textwrap.dedent(content)
         d['content'] = content
-        d['mime-type'] = 'text/markdown'
+        #d['mime-type'] = 'text/markdown'
         self.entries.append(d)
 
     def add_file(self, name, path):
         d = dict()
-        file_content, mime_type = create_file_entry(path)
+        file_content, _ = create_file_entry(path)
         d['name'] = name
         d['content'] = file_content
-        d['mime-type'] = mime_type
+        #d['mime-type'] = mime_type
         d['base64-encoded'] = "true"
         self.entries.append(d)
 
