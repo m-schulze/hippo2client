@@ -51,7 +51,7 @@ class Agent(object):
     HTTP_POST = "POST"
 
     # URL path
-    URL_API_OBJECTS = "api/v1/entity"
+    URL_API_OBJECTS = "api/v1/upload"
 
     def __init__(self, url=None, timeout=REQUEST_TIMEOUT):
         self.timeout = timeout
@@ -71,7 +71,7 @@ class Agent(object):
     def _send_data(self, data):
         self.user_agent_headers = {'Content-type': 'application/json',
                                    'Accept': 'application/json',
-                                   'User-Agent' : 'Hippodclient/1.0+'
+                                   'User-Agent' : 'hippiagent/1.0+'
                                    }
         seperator = "/"
         if self.url.endswith("/"): seperator = ""
