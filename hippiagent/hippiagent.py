@@ -100,13 +100,41 @@ class Agent(object):
         self._check_pre_sync()
         ret_list = list()
         for e in self.entities:
-            data = e.encode()
+            data = e._encode()
             ret = self._send_data(data)
             ret_list.append(ret)
         return ret_list
 
     # just an alias for sync
     upload = sync
+
+class Meta(object):
+
+    TYPE_TEST = 1
+
+    def __init__(self, type_):
+        self.type = type_
+
+class MetaTest(Meta):
+
+    FAILED = 1
+    PASSED = 2
+    ERROR = 3
+
+    def __init__(self, status):
+        super().__init__(Meta.TYPE_TEST)
+        self.status = status
+
+    def _encode(self):
+        d = {}
+        d['type'] = 'test'
+        lookup = {
+            MetaTest.FAILED : 'failed',
+            MetaTest.PASSED : 'passed',
+            MetaTest.ERROR : 'error'
+            }
+        d['status'] = lookup[self.status]
+        return json.dumps(d, sort_keys=True, separators=(',', ': '))
 
 
 class MajorEntity(object):
@@ -117,6 +145,7 @@ class MajorEntity(object):
         self.name = name
         self.submitter = submitter if submitter else getpass.getuser()
         self.lifetime_group = lifetime if lifetime else 'standard'
+        self._minors = dict()
 
     def add_markdown(self, name, content, detent=False):
         d = dict()
@@ -124,6 +153,13 @@ class MajorEntity(object):
         if detent == True:
             content = textwrap.dedent(content)
         d['content'] = content
+        #d['mime-type'] = 'text/markdown'
+        self.entries.append(d)
+
+    def add_reference(self, minor_id, name, text):
+        d = dict()
+        d['name'] = name
+        d['content'] = "[{}]({}/)".format(text, minor_id)
         #d['mime-type'] = 'text/markdown'
         self.entries.append(d)
 
@@ -136,7 +172,49 @@ class MajorEntity(object):
         d['base64-encoded'] = "true"
         self.entries.append(d)
 
-    def encode(self):
+    def _minor_add_entry(self, minor_id, o):
+        if not minor_id in self._minors:
+            self._minors[minor_id] = list()
+        self._minors[minor_id].append(o)
+
+    def minor_add_meta(self, minor_id, meta):
+        d = dict()
+        d['name'] = "{}/{}".format(minor_id, "main.meta")
+        d['content'] = meta._encode()
+        #d['mime-type'] = 'text/markdown'
+        self._minor_add_entry(minor_id, d)
+
+    def minor_add_markdown(self, minor_id, name, content, detent=False):
+        d = dict()
+        d['name'] = name
+        if detent == True:
+            content = textwrap.dedent(content)
+        d['content'] = content
+        #d['mime-type'] = 'text/markdown'
+        self._minor_add_entry(minor_id, d)
+
+    def minor_add_file(self, minor_id, name, path):
+        d = dict()
+        file_content, _ = create_file_entry(path)
+        d['name'] = name
+        d['content'] = file_content
+        #d['mime-type'] = mime_type
+        d['base64-encoded'] = "true"
+        self._minor_add_entry(minor_id, d)
+
+    def _encode_majors(self, o):
+        o['majors'] = self.entries
+
+    def _encode_minors(self, o):
+        """ flatten all minors to majors """
+        new_majors = list()
+        for k, vv in self._minors.items():
+            for v in vv:
+                v['name'] = "{}/{}".format(k, v['name'])
+                new_majors.append(v)
+        o['majors'] = o['majors'] + new_majors
+
+    def _encode(self):
         o = dict()
         o['type'] = 'major'
         o['major-id'] = self.id
@@ -144,7 +222,8 @@ class MajorEntity(object):
         # meta can be overwritten (but this is logged)
         o['meta'] = dict()
         o['meta']['lifetime-group'] = self.lifetime_group
-        o['majors'] = self.entries
+        self._encode_majors(o)
+        self._encode_minors(o)
         return json.dumps(o, sort_keys=True, separators=(',', ': '))
 
 if __name__ == "__main__":

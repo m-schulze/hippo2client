@@ -21,6 +21,7 @@ class TestHippiAgent(TestCase):
         hippiagent.Agent(url=URL, timeout=TIMEOUT)
 
     def test_major_image(self):
+        return
         e = hippiagent.MajorEntity('v1.2.3')
         path_to_image = os.path.join(os.path.dirname(os.path.abspath(__file__)), "graph.png")
         e.add_file("graph.png", path_to_image)
@@ -56,7 +57,39 @@ class TestHippiAgent(TestCase):
         a.add(e)
         a.upload()
 
+    def test_full_tree(self):
+        return
+        e = hippiagent.MajorEntity('v1.2.4')
+        e.add_markdown('001.md', '[test-001](0001/)')
+        e.add_reference('0001', '002.md', 'link to 0001')
+        e.minor_add_markdown('0001', '01.md', 'test **passed**')
+        path_to_image = os.path.join(os.path.dirname(os.path.abspath(__file__)), "graph.png")
+        e.minor_add_file('0001', "graph.png", path_to_image)
+        e.minor_add_markdown('0001', '02.md', '![graph](graph.png)')
+
+        a = hippiagent.Agent(url=URL, timeout=TIMEOUT)
+        a.add(e)
+        a.upload()
+
+    def test_full_tree_with_meta(self):
+        e = hippiagent.MajorEntity('v1.2.4')
+
+        meta = hippiagent.MetaTest(hippiagent.MetaTest.PASSED)
+        e.minor_add_meta('0001', meta)
+
+        e.add_markdown('001.md', '[test-001](0001/)')
+        e.add_reference('0001', '002.md', 'link to 0001')
+        e.minor_add_markdown('0001', '01.md', 'test **passed**')
+        path_to_image = os.path.join(os.path.dirname(os.path.abspath(__file__)), "graph.png")
+        e.minor_add_file('0001', "graph.png", path_to_image)
+        e.minor_add_markdown('0001', '02.md', '![graph](graph.png)')
+
+        a = hippiagent.Agent(url=URL, timeout=TIMEOUT)
+        a.add(e)
+        a.upload()
+
     def test_zzz_major_hello_world(self):
+        return
         e = hippiagent.MajorEntity('v2.0.0-real-good')
         e.add_markdown('0001.md', '# Real Good Example')
 
