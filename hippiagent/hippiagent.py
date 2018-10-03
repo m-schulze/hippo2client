@@ -179,9 +179,8 @@ class MajorEntity(object):
 
     def minor_add_meta(self, minor_id, meta):
         d = dict()
-        d['name'] = "{}/{}".format(minor_id, "main.meta")
+        d['name'] = "main.meta"
         d['content'] = meta._encode()
-        #d['mime-type'] = 'text/markdown'
         self._minor_add_entry(minor_id, d)
 
     def minor_add_markdown(self, minor_id, name, content, detent=False):
