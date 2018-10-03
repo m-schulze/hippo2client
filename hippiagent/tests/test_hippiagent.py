@@ -25,12 +25,13 @@ class TestHippiAgent(TestCase):
         e = hippiagent.MajorEntity('v1.2.3')
         path_to_image = os.path.join(os.path.dirname(os.path.abspath(__file__)), "graph.png")
         e.add_file("graph.png", path_to_image)
-        e.add_markdown('001.md', '![graph](graph.png)')
+        e.add_markdown('001', '![graph](graph.png)')
         a = hippiagent.Agent(url=URL, timeout=TIMEOUT)
         a.add(e)
         a.upload()
 
     def test_major_mass(self):
+        return
         for i in range(10):
             id_ = "v{}.{}.{}-{}-g{}".format(
                     random.randint(1, 10), random.randint(1, 10), random.randint(1, 10),
@@ -38,17 +39,18 @@ class TestHippiAgent(TestCase):
             e = hippiagent.MajorEntity(id_)
             for i in range(10):
                 randno = random.randint(1, 1000)
-                name = "{}.md".format(randno)
+                name = "{}".format(randno)
                 e.add_markdown(name, '# title')
             a = hippiagent.Agent(url=URL, timeout=TIMEOUT)
             a.add(e)
             a.upload()
 
     def test_minor_mass(self):
+        return
         e = hippiagent.MajorEntity('v1.2.4')
         for i in range(1000):
             randno = random.randint(1, 1000)
-            name = "{}.md".format(randno)
+            name = "{}".format(randno)
             e.add_markdown(name, '# title')
 
         a = hippiagent.Agent(url=URL, timeout=TIMEOUT)
@@ -58,7 +60,7 @@ class TestHippiAgent(TestCase):
     def test_full_tree(self):
         return
         e = hippiagent.MajorEntity('v1.2.4')
-        e.add_markdown('001.md', '[test-001](0001/)')
+        e.add_markdown('001', '[test-001](0001/)')
         e.add_reference('0001', '002.md', 'link to 0001')
         e.minor_add_markdown('0001', '01.md', 'test **passed**')
         path_to_image = os.path.join(os.path.dirname(os.path.abspath(__file__)), "graph.png")
@@ -74,15 +76,15 @@ class TestHippiAgent(TestCase):
         e = hippiagent.MajorEntity('v2.3.4-fully-featured')
 
 
-        e.add_markdown('001.md', '# Fully Featured')
-        e.add_markdown('002.md', '## Build Times')
-        e.add_markdown('003.md', '''
+        e.add_markdown('001', '# Fully Featured')
+        e.add_markdown('002', '## Build Times')
+        e.add_markdown('003', '''
 - Compile Duration: 666 seconds
 - Test Duration: 1.2 hours
         '''
         )
 
-        e.add_markdown('004.md', '## Unit Tests')
+        e.add_markdown('004', '## Unit Tests')
 
         # unit test 0001
         meta = hippiagent.MetaTest(hippiagent.MetaTest.PASSED)
@@ -90,7 +92,7 @@ class TestHippiAgent(TestCase):
         e.minor_add_markdown('0001', '01.md', 'cunit test **passed**\n')
         e.minor_add_markdown('0001', '02.md', 'explain probably a little bit more')
         # reference subitem from main page
-        e.add_markdown('005.md', '- [unit test 1](0001/)')
+        e.add_markdown('005', '- [unit test 1](0001/)')
 
         # unit test 0002
         meta = hippiagent.MetaTest(hippiagent.MetaTest.PASSED)
@@ -98,7 +100,7 @@ class TestHippiAgent(TestCase):
         e.minor_add_markdown('0002', '01.md', 'cunit test **passed**\n')
         e.minor_add_markdown('0002', '02.md', 'explain probably a little bit more')
         # reference subitem from main page
-        e.add_markdown('006.md', '- [unit test 2](0002/)')
+        e.add_markdown('006', '- [unit test 2](0002/)')
 
         # unit test 0003
         meta = hippiagent.MetaTest(hippiagent.MetaTest.FAILED)
@@ -106,7 +108,7 @@ class TestHippiAgent(TestCase):
         e.minor_add_markdown('0003', '01.md', 'cunit test **failed**\n')
         e.minor_add_markdown('0003', '02.md', 'explain probably a little bit more')
         # reference subitem from main page
-        e.add_markdown('007.md', '- [unit test 1](0003/)')
+        e.add_markdown('007', '- [unit test 1](0003/)')
 
         # unit test 0004
         meta = hippiagent.MetaTest(hippiagent.MetaTest.ERROR)
@@ -114,10 +116,10 @@ class TestHippiAgent(TestCase):
         e.minor_add_markdown('0004', '01.md', 'cunit test **error**\n')
         e.minor_add_markdown('0004', '02.md', 'explain probably a little bit more')
         # reference subitem from main page
-        e.add_markdown('008.md', '- [unit test 1](0004/)\n')
+        e.add_markdown('008', '- [unit test 1](0004/)\n')
 
         # e.g. range between 100 and 200 are module tests
-        e.add_markdown('100.md', '## Module Tests')
+        e.add_markdown('100', '## Module Tests')
 
         meta = hippiagent.MetaTest(hippiagent.MetaTest.PASSED)
         e.minor_add_meta('0100', meta)
@@ -129,7 +131,10 @@ class TestHippiAgent(TestCase):
         e.minor_add_file('0100', "graph.png", path_to_image)
         e.minor_add_markdown('0100', '02.md', '![graph](graph.png)')
         # reference subitem from main page
-        e.add_markdown('101.md', '- [module test 1](0100/)')
+        e.add_markdown('101', '- [module test 1](0100/)')
+
+
+        e.add_html('200.html', '<b>this is a plain html snipped, html is also possible</b>')
 
         a = hippiagent.Agent(url=URL, timeout=TIMEOUT)
         a.add(e)
@@ -142,7 +147,7 @@ class TestHippiAgent(TestCase):
         meta = hippiagent.MetaTest(hippiagent.MetaTest.PASSED)
         e.minor_add_meta('0001', meta)
 
-        e.add_markdown('001.md', '[test-001](0001/)')
+        e.add_markdown('001', '[test-001](0001/)')
         e.add_reference('0001', '002.md', 'link to 0001')
         e.minor_add_markdown('0001', '01.md', 'test **passed**')
         path_to_image = os.path.join(os.path.dirname(os.path.abspath(__file__)), "graph.png")
@@ -156,9 +161,9 @@ class TestHippiAgent(TestCase):
     def test_zzz_major_hello_world(self):
         return
         e = hippiagent.MajorEntity('v2.0.0-real-good')
-        e.add_markdown('0001.md', '# Real Good Example')
+        e.add_markdown('0001', '# Real Good Example')
 
-        e.add_markdown('0002.md', '''
+        e.add_markdown('0002', '''
         ## Description
 
         Funky fresh bizzle. Da bomb potenti. Maecenizzle nisl. Its fo rizzle
@@ -179,11 +184,11 @@ class TestHippiAgent(TestCase):
 
         path_to_image = os.path.join(os.path.dirname(os.path.abspath(__file__)), "graph.png")
         e.add_file("graph.png", path_to_image)
-        e.add_markdown('0003.md', '### PNG Illustration\n![graph](graph.png)')
+        e.add_markdown('0003', '### PNG Illustration\n![graph](graph.png)')
 
         path_to_image = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rectangle.svg")
         e.add_file("rectangle.svg", path_to_image)
-        e.add_markdown('0004.md', '### SVG Illustration\n![graph](rectangle.svg)')
+        e.add_markdown('0004', '### SVG Illustration\n![graph](rectangle.svg)')
 
         cmd  = '### Code Block\n'
         cmd += '```\n'
@@ -194,9 +199,9 @@ class TestHippiAgent(TestCase):
         cmd += '    return 0;\n'
         cmd += '}\n'
         cmd += '```\n'
-        e.add_markdown('0005.md', cmd)
+        e.add_markdown('0005', cmd)
 
-        e.add_markdown('0006.md', '''
+        e.add_markdown('0006', '''
 
 ---
 

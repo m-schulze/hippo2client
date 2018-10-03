@@ -149,11 +149,23 @@ class MajorEntity(object):
 
     def add_markdown(self, name, content, detent=False):
         d = dict()
-        d['name'] = name
+        d['name'] = "{}.md".format(name)
         if detent == True:
             content = textwrap.dedent(content)
         d['content'] = content
         #d['mime-type'] = 'text/markdown'
+        self.entries.append(d)
+
+    def add_raw(self, name, content):
+        d = dict()
+        d['name'] = name
+        d['content'] = content
+        self.entries.append(d)
+
+    def add_html(self, name, content):
+        d = dict()
+        d['name'] = "{}.html".format(name)
+        d['content'] = content
         self.entries.append(d)
 
     def add_reference(self, minor_id, name, text):
