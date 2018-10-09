@@ -71,7 +71,7 @@ class Agent(object):
     def _send_data(self, data):
         self.user_agent_headers = {'Content-type': 'application/json',
                                    'Accept': 'application/json',
-                                   'User-Agent' : 'hippiagent/1.0+'
+                                   'User-Agent' : 'hippo2client/1.0+'
                                    }
         seperator = "/"
         if self.url.endswith("/"): seperator = ""

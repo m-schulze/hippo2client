@@ -6,7 +6,7 @@ with open(path.join(this_directory, 'README.md')) as f:
     long_description = f.read()
 
 setup(name='hippo2client',
-      version='1.3',
+      version='1.0',
       description='Client Adapter to Hippo2D',
       long_description=long_description,
       long_description_content_type='text/markdown',
