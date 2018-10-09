@@ -122,7 +122,7 @@ class MetaTest(Meta):
     ERROR = 3
 
     def __init__(self, status):
-        super().__init__(Meta.TYPE_TEST)
+        super(MetaTest, self).__init__(Meta.TYPE_TEST)
         self.status = status
 
     def _encode(self):
