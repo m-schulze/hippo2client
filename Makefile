@@ -18,9 +18,11 @@ setup:
 	python3 setup.py sdist
 	python3 setup.py bdist_wheel --universal
 
-upload:
+upload: setup
 	twine upload dist/*
-	#python3 setup.py sdist upload -r pypi
 
 bootstrap:
 	python3 -m pip install --user --upgrade setuptools wheel twine
+
+clean:
+	git clean -fdx
