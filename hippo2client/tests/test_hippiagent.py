@@ -31,6 +31,7 @@ class TestHippiAgent(TestCase):
         a.upload()
 
     def test_major_mass(self):
+        return
         for i in range(10):
             id_ = "v{}.{}.{}-{}-g{}".format(
                     random.randint(1, 10), random.randint(1, 10), random.randint(1, 10),
@@ -57,8 +58,52 @@ class TestHippiAgent(TestCase):
         a.upload()
 
     def test_full_tree(self):
+        path_to_image = os.path.join(os.path.dirname(os.path.abspath(__file__)), "graph.png")
+        e = hippo2client.MajorEntity('3493923932')
+
+        # first level
+        e.add_markdown('001', '# Heading - First Level')
+        e.add_markdown('002', '## Sub Heading - First Level')
+        e.add_markdown('003', '[link to second level (0001)](0001/)')
+        e.add_file("graph.png", path_to_image)
+        e.add_markdown('100', '![graph](graph.png)')
+
+        # second level
+        e.add_markdown('0001/001', '# Heading - Second Level')
+        e.add_markdown('0001/002', '## Sub Heading - Second Level')
+        e.add_markdown('0001/003', '[link to third level (0001)](0001/)') # note here, this is already relativ to 0001!
+        e.add_markdown('0001/004', '[level up link (0001)](..)')
+        e.add_file("0001/graph.png", path_to_image)
+        e.add_markdown('0001/100', '![graph](graph.png)')
+
+        # third level
+        e.add_markdown('0001/0001/001', '# Heading - Third Level')
+        e.add_markdown('0001/0001/002', '## Sub Heading - Third Level')
+        e.add_markdown('0001/0001/003', '[link to fourt level (0001)](0001/)') # note here, this is already relativ to 0001/0001!
+        e.add_markdown('0001/0001/004', '[level up link (0001)](..)') # note here, this is already relativ to 0001/0001!
+        e.add_file("0001/0001/graph.png", path_to_image)
+        e.add_markdown('0001/0001/100', '![graph](graph.png)')
+
+        # Fourth level
+        e.add_markdown('0001/0001/0001/001', '# Heading - Fourth Level')
+        e.add_markdown('0001/0001/0001/002', '## Sub Heading - Fourth Level')
+        e.add_markdown('0001/0001/0001/003', '[link to Fifth level (0001)](0001/)') # note here, this is already relativ to 0001/0001!
+        e.add_markdown('0001/0001/0001/004', '[level up link (0001)](..)') # note here, this is already relativ to 0001/0001!
+        e.add_file("0001/0001/0001/graph.png", path_to_image)
+        e.add_markdown('0001/0001/0001/100', '![graph](graph.png)')
+
+        # Fifth level
+        e.add_markdown('0001/0001/0001/0001/001', '# Heading - Fifth Level')
+        e.add_markdown('0001/0001/0001/0001/002', '## Sub Heading - Fifth Level')
+        e.add_markdown('0001/0001/0001/0001/003', 'Should be enough ...')
+        e.add_file("0001/0001/0001/0001/graph.png", path_to_image)
+        e.add_markdown('0001/0001/0001/0001/100', '![graph](graph.png)')
+
+        a = hippo2client.Agent(url=URL, timeout=TIMEOUT)
+        a.add(e)
+        a.upload()
         return
-        e = hippo2client.MajorEntity('v1.2.4')
+
         e.add_markdown('001', '[test-001](0001/)')
         e.add_reference('0001', '002.md', 'link to 0001')
         e.minor_add_markdown('0001', '01.md', 'test **passed**')
@@ -66,11 +111,9 @@ class TestHippiAgent(TestCase):
         e.minor_add_file('0001', "graph.png", path_to_image)
         e.minor_add_markdown('0001', '02.md', '![graph](graph.png)')
 
-        a = hippo2client.Agent(url=URL, timeout=TIMEOUT)
-        a.add(e)
-        a.upload()
 
     def test_zzz_tree_with_meta(self):
+        return
         """ full features test """
         e = hippo2client.MajorEntity('v2.3.4-fully-featured')
 
@@ -145,6 +188,7 @@ class TestHippiAgent(TestCase):
         a.upload()
 
     def test_zza_tree_with_meta(self):
+        return
         e = hippo2client.MajorEntity('v1.2.4')
 
         meta = hippo2client.MetaTest(hippo2client.MetaTest.PASSED)
@@ -162,6 +206,7 @@ class TestHippiAgent(TestCase):
         a.upload()
 
     def test_zzb_major_hello_world(self):
+        return
         e = hippo2client.MajorEntity('v2.0.0-real-good')
         e.add_markdown('0001', '# Real Good Example')
 
