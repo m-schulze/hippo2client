@@ -132,8 +132,22 @@ class MetaTest(Meta):
             MetaTest.FAILED : 'failed',
             MetaTest.PASSED : 'passed',
             MetaTest.ERROR : 'error'
-            }
+        }
         d['status'] = lookup[self.status]
+        return json.dumps(d, sort_keys=True, separators=(',', ': '))
+
+
+class MetaTestResult:
+
+    def __init__(self, status):
+        self._status = status.lower()
+
+    def _encode(self):
+        d = {}
+        d['type'] = 'test'
+        if self._status not in ('failed', 'passed', 'error'):
+            raise Exception('status unknown: {}'.format(self._status))
+        d['status'] = self._status
         return json.dumps(d, sort_keys=True, separators=(',', ': '))
 
 
@@ -194,6 +208,14 @@ class MajorEntity(object):
         d['name'] = "main.meta"
         d['content'] = meta._encode()
         self._minor_add_entry(minor_id, d)
+
+    add_meta = minor_add_meta
+
+    def add_alias(self, alias):
+        d = dict()
+        d['name'] = "alias.attribute"
+        d['content'] = alias
+        self.entries.append(d)
 
     def minor_add_markdown(self, minor_id, name, content, detent=False):
         d = dict()
