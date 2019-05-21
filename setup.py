@@ -6,7 +6,7 @@ with open(path.join(this_directory, 'README.md')) as f:
     long_description = f.read()
 
 setup(name='hippo2client',
-      version='1.3',
+      version='1.4',
       description='Client Adapter to Hippo2D',
       long_description=long_description,
       long_description_content_type='text/markdown',
@@ -26,9 +26,8 @@ setup(name='hippo2client',
 	'Programming Language :: Python :: 2.6',
 	'Programming Language :: Python :: 2.7',
 	'Programming Language :: Python :: 3',
-	'Programming Language :: Python :: 3.2',
-	'Programming Language :: Python :: 3.3',
-	'Programming Language :: Python :: 3.4',
+	'Programming Language :: Python :: 3.6',
+	'Programming Language :: Python :: 3.7',
         ],
       zip_safe=False
      )
