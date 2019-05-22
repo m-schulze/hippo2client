@@ -22,17 +22,16 @@ except ImportError:
 REQUEST_TIMEOUT = 5
 
 # custom exceptions
-class ArgumentException(Exception): pass
-class ConfigurationException(Exception): pass
-class InternalException(Exception): pass
-class TransformException(Exception): pass
+class Hippo2ClientError(Exception): pass
+class ArgumentError(Hippo2ClientError): pass
+class ConfigurationError(Hippo2ClientError): pass
 
 def create_file_entry(file_name, mime_type=None):
         """ Create file entry for object-item data or achievement. """
         # Check first if the file is available
         if not os.path.isfile(file_name):
             emsg = "File '{}' is not available".format(file_name)
-            raise ArgumentException(emsg)
+            raise ArgumentError(emsg)
 
         if not mime_type:
             mime_type, _ = mimetypes.guess_type(file_name)
@@ -66,7 +65,7 @@ class Agent(object):
 
     def _check_pre_sync(self):
         if not self.url:
-            raise ConfigurationException("no server URL specified")
+            raise ConfigurationError("no server URL specified")
 
     def _send_data(self, data):
         self.user_agent_headers = {'Content-type': 'application/json',
@@ -211,10 +210,18 @@ class MajorEntity(object):
 
     add_meta = minor_add_meta
 
-    def add_alias(self, alias):
+    def set_alias(self, alias):
         d = dict()
-        d['name'] = "alias.attribute"
+        d['type'] = "attribute"
+        d['name'] = "alias"
         d['content'] = alias
+        self.entries.append(d)
+
+    def set_lifetime_extended(self):
+        d = dict()
+        d['type'] = "attribute"
+        d['name'] = "lifetime"
+        d['content'] = 'extended'
         self.entries.append(d)
 
     def minor_add_markdown(self, minor_id, name, content, detent=False):
@@ -223,7 +230,6 @@ class MajorEntity(object):
         if detent == True:
             content = textwrap.dedent(content)
         d['content'] = content
-        #d['mime-type'] = 'text/markdown'
         self._minor_add_entry(minor_id, d)
 
     def minor_add_file(self, minor_id, name, path):
@@ -231,7 +237,6 @@ class MajorEntity(object):
         file_content, _ = create_file_entry(path)
         d['name'] = name
         d['content'] = file_content
-        #d['mime-type'] = mime_type
         d['base64-encoded'] = "true"
         self._minor_add_entry(minor_id, d)
 

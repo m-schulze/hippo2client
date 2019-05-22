@@ -100,7 +100,7 @@ class TestHippiAgent(TestCase):
         e.add_markdown('0001/0001/0001/0001/100', '![graph](graph.png)')
         meta = hippo2client.MetaTestResult('passed')
         e.add_meta('0001/0001/0001/0001', meta)
-        e.add_alias('alias name')
+        e.set_alias('v1.0.0-23-g77b1839')
 
         a = hippo2client.Agent(url=URL, timeout=TIMEOUT)
         a.add(e)
