@@ -202,13 +202,16 @@ class MajorEntity(object):
             self._minors[minor_id] = list()
         self._minors[minor_id].append(o)
 
-    def minor_add_meta(self, minor_id, meta):
+    def set_test_status(self, path, status):
+        if status not in ('failed', 'passed', 'error'):
+            raise ArgumentError('status unknown: {}'.format(status))
         d = dict()
-        d['name'] = "main.meta"
-        d['content'] = meta._encode()
-        self._minor_add_entry(minor_id, d)
-
-    add_meta = minor_add_meta
+        d['name'] = "{}//attribute.test-status".format(path)
+        test_data = dict()
+        test_data['status'] = status
+        test_data['type'] = 'test'
+        d['content'] = json.dumps(test_data, sort_keys=True, separators=(',', ': '))
+        self.entries.append(d)
 
     def set_alias(self, alias):
         d = dict()
