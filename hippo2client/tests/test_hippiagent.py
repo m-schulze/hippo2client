@@ -91,6 +91,9 @@ class TestHippiAgent(TestCase):
         e.add_markdown('0001/0001/0001/004', '[level up link (0001)](..)') # note here, this is already relativ to 0001/0001!
         e.add_file("0001/0001/0001/graph.png", path_to_image)
         e.add_markdown('0001/0001/0001/100', '![graph](graph.png)')
+        # following is not allowed, at least not allowed when the next
+        # deeper level add a status
+        e.set_test_status('0001/0001/0001/', "passed")
 
         # Fifth level
         e.add_markdown('0001/0001/0001/0001/001', '# Heading - Fifth Level')
