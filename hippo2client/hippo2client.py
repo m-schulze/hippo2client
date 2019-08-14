@@ -26,6 +26,16 @@ class Hippo2ClientError(Exception): pass
 class ArgumentError(Hippo2ClientError): pass
 class ConfigurationError(Hippo2ClientError): pass
 
+def is_binary_string(bytes_to_check) -> bool:
+    """
+    Tries to check whether a string is binary or not, 
+    taken from: https://stackoverflow.com/a/7392391/4711812
+
+    May finds false positives or false negatives
+    """
+    textchars = bytearray({7,8,9,10,12,13,27} | set(range(0x20, 0x100)) - {0x7f})
+    return bool(bytes_to_check.translate(None, textchars))
+
 def create_file_entry(file_name, mime_type=None):
         """ Create file entry for object-item data or achievement. """
         # Check first if the file is available
@@ -36,7 +46,9 @@ def create_file_entry(file_name, mime_type=None):
         if not mime_type:
             mime_type, _ = mimetypes.guess_type(file_name)
             if mime_type is None:
-                mime_type = TestMimeTypes.guess_type(file_name)
+                with open(file_name, "rb") as f:
+                    binary = is_binary_string(f.read(1024))
+                mime_type = 'application/octet-stream' if binary else 'text/plain'
 
         with open(file_name, "rb") as f:
             file_content = base64.b64encode(f.read())
